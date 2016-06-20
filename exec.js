@@ -15,9 +15,9 @@ function execute (command, fn) {
 
     exec(command, (error, stdout, stderr) => {
       if (!error) {
-        resolve(stdout):
+        resolve(stdout);
       }
-      reject({ err : { 
+      reject({ err : {
         error , stderr
       }});
     });
