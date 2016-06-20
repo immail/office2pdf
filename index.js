@@ -12,13 +12,15 @@ const server = http.createServer((request, response) => {
 
      execute(`unoconv -f pdf /tmp/${filename}`)
         .then(name => {
+
           response.writeHead(200, {"Content-Type" : "text/plain"});
-          res.write('success')
+          response.write('success')
           response.end();
         })
         .catch(err => {
+
           response.writeHead(400, {"Content-Type" : "text/plain"});
-          res.write(err.errror)
+          response.write(err.errror)
           response.end();
         });
 

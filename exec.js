@@ -9,7 +9,7 @@ function execute (command, fn) {
   }
 
   return new Promise((resolve, reject) => {
-    if (!unoconv_is_present(command)) {
+    if (!is_unoconv_comand(command)) {
       throw new Error('invalid command')
     }
 
