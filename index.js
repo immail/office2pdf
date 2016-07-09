@@ -20,7 +20,7 @@ const server = http.createServer((request, response) => {
         .catch(err => {
 
           response.writeHead(400, {"Content-Type" : "text/plain"});
-          response.write(err.errror)
+          response.write(err.error)
           response.end();
         });
 
