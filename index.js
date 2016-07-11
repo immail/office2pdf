@@ -1,41 +1,38 @@
-var http = require('http');
-var url = require('url');
-var exec = require('child_process').exec;
+'use strict';
 
+const http = require('http');
+const url  = require('url');
+const execute = require('./exec');
 
-function execute(command, callback){
-        exec(command, function(error, stdout, stderr)
-        {
-          callback(stdout);
-        }
-    );
-};
+const server = http.createServer((request, response) => {
 
+   if (is_local_host(request)) {
+    const result   = url.parse(request.url, true);
+    const filename = result.query['file'];
 
-var server = http.createServer(function(request, response){
+     execute(`unoconv -f pdf /tmp/${filename}`)
+        .then(name => {
 
-  /*
-    Caso queria habilitar este módulo para acesso público
-    apagar if abaixo.
-  */
-  if(request.headers.host === "localhost:3000"){
+          response.writeHead(200, {"Content-Type" : "text/plain"});
+          response.write('success')
+          response.end();
+        })
+        .catch(err => {
 
-    var result = url.parse(request.url, true);
+          response.writeHead(400, {"Content-Type" : "text/plain"});
+          response.write(err.error)
+          response.end();
+        });
 
-    var filename = result.query['file'];
-
-     execute("unoconv -f pdf /tmp/"+ filename, function(name){
-       response.writeHead(200, {"Content-Type" : "text/html"});
-       response.end();
-     });
-
-   }else{
+   } else {
      response.end();
    }
-
-
 });
 
-server.listen(3000, function(){
+function is_local_host(request) {
+  return /^localhost/.test(request.headers.host);
+}
+
+server.listen(process.env.OFFICE_TO_PDF || 6800, function(){
   console.log('Conversor no ar');
 });
